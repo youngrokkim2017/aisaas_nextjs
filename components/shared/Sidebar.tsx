@@ -34,6 +34,7 @@ const Sidebar = () => {
                         height={24} 
                         className={`${isActive && 'brightness-200'}`}
                       />
+                      {link.label}
                     </Link>
                   </li>
                 )
@@ -53,6 +54,7 @@ const Sidebar = () => {
                         height={24} 
                         className={`${isActive && 'brightness-200'}`}
                       />
+                      {link.label}
                     </Link>
                   </li>
                 )
