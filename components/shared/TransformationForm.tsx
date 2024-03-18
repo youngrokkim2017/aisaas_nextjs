@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { z } from "zod"
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/select"
 import { aspectRatioOptions, defaultValues, transformationTypes } from "@/constants"
 import { CustomField } from "./CustomField"
-import { AspectRatioKey } from "@/lib/utils"
+import { AspectRatioKey, debounce, deepMergeObjects } from "@/lib/utils"
 
 export const formSchema = z.object({
   title: z.string(),
@@ -42,6 +42,7 @@ const TransformationForm = ({ action, data = null, userId, type, creditBalance, 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isTransforming, setIsTransforming] = useState(false)
   const [transformationConfig, setTransformationConfig] = useState(config)
+  const [isPending, startTransition] = useTransition()
 
   const initialValues = data && action === 'Update' ? {
     title: data?.title,
@@ -76,11 +77,31 @@ const TransformationForm = ({ action, data = null, userId, type, creditBalance, 
   }
 
   const onInputChangeHandler = (fieldName: string, value: string, type: string, onChangeField: (value: string) => void) => {
-    
+    debounce(() => {
+      setNewTransformation((prevState: any) => ({
+        ...prevState,
+        [type]: {
+          ...prevState?.[type],
+          [fieldName === 'prompt' ? 'prompt' : 'to' ]: value 
+        }
+      }))
+    }, 1000)();
+      
+    return onChangeField(value)
   }
 
   const onTransformHandler = () => {
-    
+    setIsTransforming(true)
+
+    setTransformationConfig(
+      deepMergeObjects(newTransformation, transformationConfig)
+    )
+
+    setNewTransformation(null)
+
+    startTransition(async () => {
+    //   await updateCredits(userId, creditFee)
+    })
   }
 
   return (
