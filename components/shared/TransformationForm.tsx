@@ -28,6 +28,7 @@ import { CustomField } from "./CustomField"
 import { AspectRatioKey, debounce, deepMergeObjects } from "@/lib/utils"
 import MediaUploader from "./MediaUploader"
 import TransformedImage from "./TransformedImage"
+import { updateCredits } from "@/lib/actions/user.actions"
 
 export const formSchema = z.object({
   title: z.string(),
@@ -102,7 +103,8 @@ const TransformationForm = ({ action, data = null, userId, type, creditBalance, 
     setNewTransformation(null)
 
     startTransition(async () => {
-    //   await updateCredits(userId, creditFee)
+      await updateCredits(userId, -1)
+      // update creditFee
     })
   }
 
