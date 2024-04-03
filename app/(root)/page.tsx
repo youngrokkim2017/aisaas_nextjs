@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 import { navLinks } from "@/constants"
+import { Collection } from '@/components/shared/Collection'
 
 const Home = () => {
   return (
@@ -25,6 +26,14 @@ const Home = () => {
             </Link>
           ))}
         </ul>
+      </section>
+      <section className="sm:mt-12">
+        <Collection  
+          hasSearch={true}
+          images={images?.data}
+          totalPages={images?.totalPage}
+          page={page}
+        />
       </section>
     </>
   )
